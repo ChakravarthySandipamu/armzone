@@ -1,15 +1,30 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
+  "parameters": {
+      "vnetAddressSpace": {
+           "type": "string"
+           "metadata": {
+                "description": "vnet address space"
+             },
+             "defaultValue": "192.168.0.0/16"
+           },
+           "location": {
+               "type": "string",
+               "metadata": {
+                 "description": "create resource in this region"
+                },
+                "defaultValue": "[resourceGroup().location]"
+    },          
   "resources": [
     {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2020-06-01",
-      "name": "myfirstvnet",
+      "name": "[parameters('location')]",
       "location": "EastUS",
       "properties": {
         "addressSpace": {
-          "addressPrefixes": ["192.168.0.0/16"]
+          "addressPrefixes": ["[parameters('vnetAddressSpace')]"]
          
          }
        }
