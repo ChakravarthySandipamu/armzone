@@ -1,37 +1,36 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
+  "contentVersion": "0.0.0.0",
   "parameters": {
       "vnetAddressSpace": {
-           "type": "string"
-           "metadata": {
-                "description": "vnet address space"
-             },
-             "defaultValue": "192.168.0.0/16"
-           },
-           "location": {
-               "type": "string",
-               "metadata": {
-                 "description": "create resource in this region"
-                },
-                "defaultValue": "[resourceGroup().location]"
-    },          
-  "resources": [
-    {
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2020-06-01",
-      "name": "[parameters('location')]",
-      "location": "EastUS",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": ["[parameters('vnetAddressSpace')]"]
-         
-         }
-       }
-       
-     }
-     
+          "type": "string",
+          "metadata": {
+              "description": "vnet address space"
+          },
+          "defaultValue": "192.168.0.0/16"
+      },
+      "location": {
+          "type": "string",
+          "metadata": {
+              "description": "Region to create resources"
+          },
+          "defaultValue" : "[resourceGroup().location]"
+      }
+
+  },
+  "resources": [ 
+      {
+          "type": "Microsoft.Network/virtualNetworks",
+          "apiVersion": "2020-11-01",
+          "name": "myfirstvnet",
+          "location": "[parameters('location')]",
+          "properties": {
+              "addressSpace": {
+                  "addressPrefixes": ["[parameters('vnetAddressSpace')]"]
+              }
+
+          }
+
+      }
    ]
-   
- }
-     
+}
