@@ -17,6 +17,17 @@
 			"defaultValue": "[resourceGroup().location]"
 		}
 	},
+	"subnetCidrRanges": {
+	     "type": "string",
+	     "metadata": {
+				"description": "subnet cidr ranges"
+			},
+			"defaultValue": "["192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"]
+			}
+	    },
+	    "variables": {
+	        "subnetNames": ["myfirstvnet/web1", "myfirstvnet/web2", "myfirstvnet/db1", "myfirstvnet/db2"]
+		},
 	"resources": [
 		{
 			"type": "Microsoft.Network/virtualNetworks",
@@ -32,49 +43,17 @@
 		{
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"apiVersion": "2020-11-01",
-			"name": "myfirstvnet/web1",
+			"name": "[variables('subnetNames'[copyIndex()])]",
 			"properties": {
-				"addressPrefix": "192.168.0.0/24"
+				"addressPrefix": "[parameters('subnetCidrRanges')[copyIndex()]]"
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]"
+				"copy": {
+                                    "name": "subnet-copy",
+                                    "count": 4,
+                                    "mode": "serial",
+                       }
 			]
 		},
-		{
-			"type": "Microsoft.Network/virtualNetworks/subnets",
-			"apiVersion": "2020-11-01",
-			"name": "myfirstvnet/web2",
-			"properties": {
-				"addressPrefix": "192.168.1.0/24"
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]",
-				"[resourceId('Microsoft.Network/virtualNetworks/subnet', 'myfirstvnet', 'web1')]"
-			]
-		},
-		{
-			"type": "Microsoft.Network/virtualNetworks/subnets",
-			"apiVersion": "2020-11-01",
-			"name": "myfirstvnet/db1",
-			"properties": {
-				"addressPrefix": "192.168.2.0/24"
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]",
-				"[resourceId('Microsoft.Network/virtualNetworks/subnet', 'myfirstvnet', 'web2')]"
-			]
-		},
-		{
-			"type": "Microsoft.Network/virtualNetworks/subnets",
-			"apiVersion": "2020-11-01",
-			"name": "myfirstvnet/db2",
-			"properties": {
-				"addressPrefix": "192.168.3.0/24"
-			},
-			"dependsOn": [
-				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]",
-				"[resourceId('Microsoft.Network/virtualNetworks/subnet', 'myfirstvnet', 'db1')]"
-			]
-		}
-	]
-}
+		
