@@ -1,43 +1,84 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "0.0.0.0",
-  "parameters": {
-      "vnetAddressSpace": {
-          "type": "string",
-          "metadata": {
-              "description": "vnet address space"
-          },
-          "defaultValue": "192.168.0.0/16"
-      },
-      "location": {
-          "type": "string",
-          "metadata": {
-              "description": "Region to create resources"
-          },
-          "defaultValue" : "[resourceGroup().location]"
-      }
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+	"contentVersion": "0.0.0.0",
+	"parameters": {
+		"vnetAddressSpace": {
+			"type": "string",
+			"metadata": {
+				"description": "vnet address space"
+			},
+			"defaultValue": "192.168.0.0/16"
+		},
+		"location": {
+			"type": "string",
+			"metadata": {
+				"description": "Region to create resources"
+			},
+			"defaultValue": "[resourceGroup().location]"
+		}
 
-  },
-  "resources": [ 
-      {
-          "type": "Microsoft.Network/virtualNetworks",
-          "apiVersion": "2020-11-01",
-          "name": "myfirstvnet",
-          "location": "[parameters('location')]",
-          "properties": {
-              "addressSpace": {
-                  "addressPrefixes": ["[parameters('vnetAddressSpace')]"]
-              }
+	},
+	"resources": [
 
-          }
+		{
+			"type": "Microsoft.Network/virtualNetworks",
+			"apiVersion": "2020-11-01",
+			"name": "myfirstvnet",
+			"location": "[parameters('location')]",
+			"properties": {
+				"addressSpace": {
+					"addressPrefixes": ["[parameters('vnetAddressSpace')]"]
+				}
 
-      },
-      {
-          "type": "Microsoft.Network/virtualNetworks/subnets",
-          "apiVersion": "2021-05-01",
-          "name": "myfirstvnet/web1",
-          "properties": {
-              "addressPrefix": "192.168.0.0/24",
-          },
-   ]
+			}
+
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"apiVersion": "2020-11-01",
+			"name": "myfirstvnet/web1",
+			"properties": {
+				"addressPrefix": "192.168.0.0/24"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]"
+			]
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"apiVersion": "2020-11-01",
+			"name": "myfirstvnet/web2",
+			"properties": {
+				"addressPrefix": "192.168.1.0/24"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]",
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet', 'web1')]"
+			]
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"apiVersion": "2020-11-01",
+			"name": "myfirstvnet/db1",
+			"properties": {
+				"addressPrefix": "192.168.2.0/24"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]",
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet', 'web2')]"
+			]
+		},
+		{
+			"type": "Microsoft.Network/virtualNetworks/subnets",
+			"apiVersion": "2020-11-01",
+			"name": "myfirstvnet/db2",
+			"properties": {
+				"addressPrefix": "192.168.3.0/24"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet')]",
+				"[resourceId('Microsoft.Network/virtualNetworks', 'myfirstvnet', 'db1')]"
+			]
+		}
+	]
 }
