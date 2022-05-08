@@ -31,6 +31,13 @@
 
           }
 
-      }
+      },
+      {
+          "type": "Microsoft.Network/virtualNetworks/subnets",
+          "apiVersion": "2021-05-01",
+          "name": "myfirstvnet/web1",
+          "properties": {
+              "addressPrefix": "192.168.0.0/24",
+          },
    ]
 }
