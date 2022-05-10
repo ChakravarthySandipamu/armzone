@@ -17,7 +17,7 @@
 			"defaultValue": "[resourceGroup().location]"
 	},
 	 "subnetCidrRanges": {
-	     "type": "string",
+	     "type": "array",
 	     "metadata": {
 				"description": "subnet cidr ranges"
 			},
@@ -35,6 +35,10 @@
 			"apiVersion": "2020-11-01",
 			"name": "[variables('networkName')]",
 			"location": "[parameters('location')]",
+			"tags": {
+				"Env": "Development",
+				"CreatedBy": "ARM"
+			},
 			"properties": {
 				"addressSpace": {
 					"addressPrefixes": ["[parameters('vnetAddressSpace')]"]
@@ -44,7 +48,6 @@
 		{
 			"type": "Microsoft.Network/virtualNetworks/subnets",
 			"apiVersion": "2020-11-01",
-			"name": "[variables('subnetNames'[copyIndex()])]",
 			"name": "[concat(variables('networkName'), '/', variables('subnetNames')[copyIndex()])]",
 			"properties": {
 				"addressPrefix": "[parameters('subnetCidrRanges')[copyIndex()]]"
@@ -53,14 +56,14 @@
 				"[resourceId('Microsoft.Network/virtualNetworks',variables('networkName'))]"
 				],
 				"copy": {
-                                    "name": "subnet-copy",
+                                    "name": "subnet copy",
                                     "count": 4,
                                     "mode": "serial"
                        }
 	},
 	{
           "type": "Microsoft.Network/networkSecurityGroups",
-          "apiVersion": "2021-08-01",
+          "apiVersion": "2020-11-01",
           "name": "webnsg",
           "location": "[resourceGroup().location]",
           "tags": {
