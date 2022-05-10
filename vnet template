@@ -57,7 +57,50 @@
                                     "count": 4,
                                     "mode": "serial"
                        }
-		}
-	 ]
-	}
+	},
+	{
+          "type": "Microsoft.Network/networkSecurityGroups",
+          "apiVersion": "2021-08-01",
+          "name": "webnsg",
+          "location": "[resourceGroup().location]",
+          "tags": {
+              "Env": "Development",
+              "CreatedBy": "ARM"
+          },
+         "properties": {
+             "securityRules": [
+                {
+                  "name": "openssh",
+                  "properties": {
+		      "priority": 300,
+                      "access": "allow",
+                      "description": "open ssh for everyone",
+		      "protocol": "TCP",
+		      "sourceAddressPrefix": "*",
+		      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+		      "destinationPortRanges": "22",
+		      "direction": "Inbound"
+		     }
+		    },
+		     {
+                  "name": "port_8080",
+                  "properties": {
+		      "priority": 310,
+                      "access": "allow",
+                      "description": "open 80 for everyone",
+		      "protocol": "TCP",
+		      "sourceAddressPrefix": "*",
+		      "sourcePortRange": "*",
+                      "destinationAddressPrefix": "*",
+		      "destinationPortRanges": "80",
+		      "direction": "Inbound"
+		     }
+		    }
+		   ]
+		  }
+		 }
+]
+}
+                 
 		
